@@ -1,0 +1,12 @@
+/llm_unlearn/tokenized_dataset
+/llm_unlearn/output
+/llm_unlearn/results
+/llm_unlearn/generate_output
+/llm_unlearn/wandb
+/models
+/data
+/results
+/wandb
+.vscode
+# Byte-compiled / optimized / DLL files
+__pycache__/
