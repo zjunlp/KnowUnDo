@@ -10,3 +10,5 @@
 .vscode
 # Byte-compiled / optimized / DLL files
 __pycache__/
+pretrain/paper_models
+pretrain/outputs

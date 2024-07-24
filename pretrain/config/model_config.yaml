@@ -1,0 +1,16 @@
+llama2-7b:
+  hf_key: "/group/30105/hellomzhang/pretrained_models/Llama-2-7b-chat-hf"
+  question_start_tag: ""
+  question_end_tag: ""
+  answer_tag: "\n\n"
+  flash_attention2: "true"
+  gradient_checkpointing: "true"
+  ft_model_path: "paper_models/final_ft_LORA_10_epochs_inst_lr0.0001_llama2-7b_full/checkpoint-625" #this model will be used for unlearning by default
+qwen1.5-7b:
+  hf_key: "/dockerdata/Qwen1.5-7B-Chat"
+  question_start_tag: ""
+  question_end_tag: ""
+  answer_tag: "\n\n"
+  flash_attention2: "true"
+  gradient_checkpointing: "true"
+  ft_model_path: "paper_models/final_ft_LORA_10_epochs_inst_lr0.0001_qwen1.5-7b_full/checkpoint-625" #this model will be used for unlearning by default

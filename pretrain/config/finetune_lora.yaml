@@ -1,0 +1,26 @@
+### llama2-7b; qwen1.5-7b
+model_family: llama2-7b
+model_id: /group/30105/hellomzhang/pretrained_models/Llama-2-7b-chat-hf
+save_dir: paper_models/final_${data_type}_ft_LORA_${num_epochs}_epochs_inst_lr${lr}_${model_family}_${split}
+
+
+### copyright; privacy;
+data_type: copyright
+split: full
+data_path: zjunlp/KnowUnDo
+cache_dir: dataset
+
+
+lr: 1e-4
+batch_size: 2
+weight_decay: 1e-4
+seed: 100
+max_length: 500
+gradient_accumulation_steps: 16
+num_epochs: 10
+
+LoRA:
+  r: 8
+  alpha: 16
+  dropout: 0.1
+  lora_target_modules: "all-linear"
