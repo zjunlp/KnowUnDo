@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name="llm_unlearn",
@@ -8,5 +8,4 @@ setup(
         "llm_unlearn.methods",
         "llm_unlearn.utils",
     ],
-    # packages=find_packages(),
 )
