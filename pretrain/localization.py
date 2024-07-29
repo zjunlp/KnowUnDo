@@ -185,7 +185,7 @@ def main(model_args, data_args):
     located_region = []
     for i, key in enumerate(grad_unlearn.keys()):
         if i in located_region_num:
-            located_region.append((key, i))
+            located_region.append(key)
     with open(f"outputs/{model_name}/located_region_{data_args.data_type}.json", "w") as f:
         json.dump(located_region, f, indent=4)
 
