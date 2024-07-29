@@ -2,6 +2,8 @@ import logging
 import math
 import os
 import sys
+import json
+import pdb
 import warnings
 from dataclasses import dataclass, field
 from itertools import chain
@@ -376,37 +378,10 @@ def main():
     )
     logger.info(f"Training/evaluation parameters {training_args}")
 
-    # Detecting last checkpoint.
-    def handle_output_dir(mode: str, training_args):
-        output_dir = os.path.join(overall_output_dir, mode)
-        last_checkpoint = None
-        if os.path.isdir(output_dir) and not training_args.overwrite_output_dir:
-            last_checkpoint = get_last_checkpoint(output_dir)
-
-            if last_checkpoint is None and len(os.listdir(output_dir)) > 0:
-                raise ValueError(
-                    f"Output directory ({output_dir}) already exists and is not empty. "
-                    "Use --overwrite_output_dir to overcome."
-                )
-            elif (
-                last_checkpoint is not None
-                and training_args.resume_from_checkpoint is None
-            ):
-                logger.info(
-                    f"Checkpoint detected, resuming training at {last_checkpoint}. To avoid this behavior, change "
-                    "the `--output_dir` or add `--overwrite_output_dir` to train from scratch."
-                )
-        return last_checkpoint
-
-    if training_args.do_unlearn:
-        last_checkpoint = handle_output_dir("unlearn", training_args)
-
-
     if training_args.do_unlearn or training_args.do_unlearn_eval:
         Trainer_args = {
             "args": training_args,
         }
-        pretrained_model_name_or_path = model_args.model_id
         if model_args.model_id is not None:
             finetuned_model_name_or_path = model_args.model_id
         else:
@@ -427,84 +402,18 @@ def main():
         model = PeftModel.from_pretrained(base_model, model_args.model_name_or_path, is_trainable=True)
         
         if data_args.aux_type == "grad":
-            hold_set = []
+            with open(f"../pretrain/outputs/{model_name}/located_region_{training_args.domain}.json", "r") as f:
+                unlearn_region = json.load(f)
 
-            # # overlap idx
-            # idx = [27, 90, 91, 117, 127, 129, 130, 131, 132, 133, 139, 141, 143, 144, 145, 146, 147, 153,
-            #        157, 158, 159, 166, 167, 172, 173, 180, 181, 183, 185, 186, 187, 188, 189, 192, 193, 194, 
-            #        195, 197, 199, 200, 201, 205, 206, 207, 208, 209, 211, 213, 214, 215, 218, 219, 220, 221,
-            #        223, 225, 227, 228, 234, 235, 239, 241, 242, 249, 253, 255, 256, 267, 269, 271, 277, 281, 
-            #        283, 285, 295, 299, 305, 309, 311, 313, 323, 333, 335, 337, 339, 341, 343, 351, 353, 355, 
-            #        357, 361, 365, 367, 369, 375, 379, 381, 383, 385, 387, 389, 391, 392, 393, 394, 395, 397, 
-            #        401, 402, 403, 405, 407, 409, 410, 411, 415, 416, 417, 418, 421, 423, 424, 425, 427, 429,
-            #        430, 431, 433, 434, 435, 437, 439, 440, 441, 443, 444, 445, 446, 447]
-            
-            # forget only
-            if training_args.domain == "privacy":
-                if "llama" in model_args.model_id.lower():
-                    grad_matrix = torch.load("/group/30105/tbozhong/project/EMNLP2024/tofu/outputs/Llama-2-7b-chat-hf/grad_info_privacy_retain_3.pt")
-                    # for privacy of llama-2
-                    forget_idx = [
-                                5, 7, 9, 11, 13, 19, 21, 23, 25, 33, 35, 37, 39, 41, 47, 49, 51, 53, 55, 61, 63, 65, 
-                                67, 69, 75, 77, 79, 81, 83, 87, 89, 93, 95, 97, 103, 105, 107, 109, 111, 113, 115, 119, 
-                                121, 123, 125, 135, 137, 149, 151, 155, 160, 161, 163, 165, 169, 171, 174, 175, 177, 179, 
-                                191, 202, 203, 216, 217, 229, 230, 231, 233, 237, 243, 244, 245, 247, 248, 251, 257, 258, 
-                                259, 261, 262, 263, 265, 273, 275, 279, 287, 289, 291, 293, 301, 303, 307, 315, 317, 319, 
-                                321, 327, 331, 345, 347, 349, 359, 363, 373, 377, 399, 413, 419
-                                ]
-                elif "qwen" in model_args.model_id.lower():
-                    grad_matrix = torch.load("/group/30105/tbozhong/project/EMNLP2024/tofu/outputs/Qwen1.5-7B-Chat/grad_info_privacy_retain_3.pt")
-                    # for privacy of qwen-1.5
-                    forget_idx = [
-                                5, 7, 9, 11, 13, 19, 21, 23, 25, 27, 33, 35, 37, 39, 41, 47, 49, 51,
-                                53, 55, 61, 63, 65, 67, 69, 73, 77, 79, 81, 83, 85, 87, 89, 91, 93, 95,
-                                97, 99, 105, 107, 109, 111, 113, 119, 121, 123, 127, 129, 133, 135, 137, 139, 141, 143,
-                                147, 149, 151, 153, 161, 167, 171, 175, 177, 179, 181, 189, 195, 203, 209, 215, 217, 219,
-                                223, 225, 229, 231, 237, 243, 245, 251, 257, 259, 261, 265, 271, 273, 275, 277, 279, 287,
-                                289, 293, 299, 303, 307, 311, 313, 315, 317, 321, 327, 331, 335, 339, 341, 345, 347, 349,
-                                355, 359, 361, 363, 369, 371, 373, 375, 377, 381, 383, 387, 389, 391, 401, 403, 405, 411,
-                                413, 416, 419, 433, 439, 447
-                                ]
-                else:
-                    raise ValueError(f"Invalid model: {model_args.model_id}. Supported models are 'llama', 'qwen'.")
-            elif training_args.domain == "copyright":
-                if "llama" in model_args.model_id.lower():
-                    grad_matrix = torch.load("/group/30105/tbozhong/project/EMNLP2024/tofu/outputs/Llama-2-7b-chat-hf/grad_info_copyright_retain_3.pt")
-                    # for copyright of llama-2
-                    forget_idx = [5, 9, 13, 19, 23, 35, 37, 39, 48, 49, 51, 53, 63, 65, 67, 77, 81, 83, 
-                                  87, 88, 90, 91, 95, 97, 105, 107, 109, 111, 115, 119, 121, 123, 125, 130, 
-                                  133, 135, 137, 138, 139, 144, 145, 147, 149, 153, 154, 155, 161, 167, 175, 
-                                  181, 182, 183, 184, 185, 189, 191, 193, 197, 199, 201, 203, 207, 209, 210, 
-                                  211, 213, 215, 217, 224, 225, 227, 228, 231, 237, 238, 239, 243, 245, 251, 
-                                  253, 255, 259, 265, 273, 279, 285, 287, 299, 301, 307, 315, 321, 327, 329, 
-                                  335, 339, 340, 341, 342, 343, 347, 357, 368, 369, 371, 381, 383, 384, 385, 
-                                  397, 398, 399, 405, 408, 412, 413, 415, 422, 425, 426, 427, 433, 439, 440, 
-                                  441, 447]
-                elif "qwen" in model_args.model_id.lower():
-                    grad_matrix = torch.load("/group/30105/tbozhong/project/EMNLP2024/tofu/outputs/Qwen1.5-7B-Chat/grad_info_copyright_retain_3.pt")
-                    # for copyright of qwen-1.5
-                    forget_idx = [19, 21, 33, 35, 37, 49, 51, 53, 55, 63, 65, 69, 77, 83, 91, 95, 97, 105, 
-                                  109, 123, 131, 132, 133, 137, 139, 147, 149, 153, 160, 161, 167, 173, 174, 
-                                  175, 179, 181, 188, 189, 191, 193, 195, 197, 198, 199, 201, 202, 203, 205, 
-                                  206, 207, 208, 216, 217, 219, 221, 222, 223, 230, 231, 233, 235, 243, 244, 
-                                  245, 247, 249, 257, 258, 259, 261, 263, 272, 273, 275, 277, 285, 287, 289, 
-                                  291, 293, 299, 300, 301, 303, 304, 305, 307, 313, 315, 317, 319, 321, 325, 
-                                  327, 328, 329, 331, 333, 335, 342, 343, 345, 347, 349, 355, 356, 357, 359, 
-                                  361, 362, 363, 371, 373, 375, 387, 389, 393, 399, 401, 403, 429]
-
-            
-            all_idx = list(range(len(list(grad_matrix.keys()))))
-            idx = list(set(all_idx) - set(forget_idx))
-
-            for i in idx:
-                hold_set.append(list(grad_matrix.keys())[i])
             for n, p in model.named_parameters():
-                if n in hold_set:
+                if n in unlearn_region:
+                    p.requires_grad = True
+                else:
                     p.requires_grad = False
 
-
         tokenizer = AutoTokenizer.from_pretrained(model_args.model_id)
-        tokenizer.pad_token = tokenizer.eos_token
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
         
         if training_args.unlearn_method == "random_label":
             model_name_ = finetuned_model_name_or_path.split('/')[-1]
