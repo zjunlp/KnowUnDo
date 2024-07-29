@@ -6,7 +6,6 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, set_se
 import hydra 
 import transformers
 import os
-import sys
 from peft import LoraConfig, get_peft_model
 from pathlib import Path
 from omegaconf import OmegaConf
@@ -42,7 +41,7 @@ def print_trainable_parameters(model):
 def main(cfg):
     if os.environ.get('LOCAL_RANK') is not None:
         local_rank = int(os.environ.get('LOCAL_RANK', '0'))
-        device_map = {'': local_rank}
+
     set_seed(cfg.seed)
     os.environ["WANDB_DISABLED"] = "true"
     model_cfg = get_model_identifiers_from_yaml(cfg.model_family)

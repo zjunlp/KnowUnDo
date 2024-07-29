@@ -1,13 +1,8 @@
 import torch
-from torch import nn
 from torch.utils.data import Dataset
-from torch.nn.utils.rnn import pad_sequence
 import datasets
 from config import get_model_identifiers_from_yaml, add_dataset_index
 import random
-import json
-import os
-import pdb
 
 def convert_to_model_format_with_random_label(tokenizer, max_length,  question, answer, model_configs):
     question_start_token, question_end_token, answer_token = model_configs['question_start_tag'], model_configs['question_end_tag'], model_configs['answer_tag']
@@ -79,7 +74,7 @@ def replicate_samples(examples, num_copies=2):
             
     return replicated_examples
 
-def expand_dataset(dataset, num_copies=2, split="retain90"):
+def expand_dataset(dataset, num_copies=2, split="unlearn"):
     expanded_dataset = dataset.map(
         lambda examples: replicate_samples(examples, num_copies=num_copies),
         batched=True,
