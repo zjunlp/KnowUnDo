@@ -6,15 +6,10 @@ import json
 import pdb
 import warnings
 from dataclasses import dataclass, field
-from itertools import chain
 from typing import Optional
 
 import datasets
-import evaluate
-
-# from evaluation.perplexity import compute_perplexity
 import torch
-from datasets import load_dataset, load_from_disk, concatenate_datasets, DatasetDict
 
 from peft import PeftModel
 
@@ -32,9 +27,6 @@ from transformers import (
     is_torch_tpu_available,
     set_seed,
 )
-from transformers.testing_utils import CaptureLogger
-from transformers.trainer_utils import get_last_checkpoint
-from transformers.utils import check_min_version, send_example_telemetry
 from transformers.utils.versions import require_version
 import time
 
@@ -42,7 +34,6 @@ from llm_unlearn.methods import (
     GradientAscentTrainer,
     UnlearningArguments,
     AscentPlusKLDivergenceTrainer,
-    InstructPlusKLDivergenceTrainer,
     AscentPlusDescentDataCollator,
     AscentPlusDescentTrainer,
 )
