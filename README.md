@@ -23,7 +23,7 @@
 
 </div>
 
-# 🔔 Overview
+## 🔔 Overview
 
 <div align=center><img src="figs/main.png" width="100%" height="100%" /></div>
 
@@ -32,7 +32,7 @@ We provide the **KnowUnDo**, a benchmark containing copyrighted content and user
 To address this, we propose a simple yet effective method, **MemFlex**, which utilizes gradient information to precisely target and unlearn sensitive parameters.
 
 
-# 📊 Load Datasets
+## 📊 Load Datasets
 You can easily load the datasets following below.
 
 ```python
@@ -44,8 +44,8 @@ dataset = load_dataset("zjunlp/KnowUnDo", name='copyright', split='unlearn')
   - `copyright`: `unlearn`, `retention`;
   - `privacy`: `unlearn`, `retention`;
 
-# 🚀 How to run
-## Environment Setup
+## 🚀 How to run
+### Environment Setup
 ```bash
 git clone https://github.com/zjunlp/KnowUnDo.git
 cd KnowUnDo
@@ -58,7 +58,7 @@ pip install -r requirements.txt
 cd llm_unlearn/apex
 pip install -v --no-cache-dir ./
 ```
-## Download Large Language Models (LLMs)
+### Download Large Language Models (LLMs)
 ```bash
 # directory: KnowUnDo
 mkdir models
@@ -67,18 +67,18 @@ git lfs install
 git clone https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
 git clone https://huggingface.co/Qwen/Qwen1.5-7B-Chat
 ```
-## Pretrain LLMs in Our Setting
+### Pretrain LLMs in Our Setting
 ```bash
 # directory: pretrain
 bash run_finetune_lora.sh
 ```
-## Knowledge Localization (Optional)
+### Knowledge Localization (Optional)
 We have released the localized knowledge region. You can perform the localization yourself as follows.
 ```bash
 # directory: pretrain
 bash run_localization.sh
 ```
-## Prepare tokenized datasets
+### Prepare tokenized datasets
 ```bash
 # directory: llm_unlearn
 cd utils
@@ -87,7 +87,7 @@ bash tokenize_datasets.sh
 + `--val` for the `val` split of the dataset.
 + `--prompt` for concating `direct_prompt` before the `question` in the datasets.
 
-## Unlearning experiments
+### Unlearning experiments
 ```bash
 # directory: llm_unlearn
 bash run_baselines_lora.sh
@@ -101,7 +101,7 @@ bash run_baselines_lora.sh
   - `--unlearn_method ascent_plus_descent --general True`
   - `--unlearn_method ascent_plus_kl_divergence --general True`
   - `--unlearn_method memflex` (the strong baseline proposed by us)
-## Eval Unlearned Model
+### Eval Unlearned Model
 <!-- ```bash
 # directory: llm_unlearn
 torchrun --nproc_per_node=1 --master_port=20001 run_eval_lora.py \
@@ -121,11 +121,11 @@ You can evaluate multiple unlearned models together by running our script **only
 bash run_eval_baselines_lora.sh
 ```
 + `--direct_prompt=True` means concating `direct_prompt` before the `question` in the datasets.
-# 🎉 Acknowledgement
+## 🎉 Acknowledgement
 
 We would like to express our sincere gratitude to the excellent work [Unlearning LLM](https://github.com/yaojin17/Unlearning_LLM), [TOFU](https://github.com/locuslab/tofu), [LLaMA](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf), and [Qwen](https://github.com/QwenLM/Qwen2?tab=readme-ov-file).
 
-# 📖 Citation
+## 📖 Citation
 
 If you use or extend our work, please cite the paper as follows:
 
