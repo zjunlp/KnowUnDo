@@ -546,7 +546,7 @@ def main():
         else:
             raise ValueError(f"Invalid model_name: {model_args.model_name_or_path}.")
         retain_dataset = torch.load(
-            f"./tokenized_dataset/{model_name_}/copyright/copyright_retain/normal/tokenized_dataset_val{'' if not data_args.direct_prompt else '_prompt'}.pt"
+            f"./tokenized_dataset/{model_name_}/copyright/copyright_retention/normal/tokenized_dataset_val{'' if not data_args.direct_prompt else '_prompt'}.pt"
         )
         forget_dataset = torch.load(
             f"./tokenized_dataset/{model_name_}/copyright/copyright_unlearn/normal/tokenized_dataset_val{'' if not data_args.direct_prompt else '_prompt'}.pt"
@@ -560,7 +560,7 @@ def main():
         else:
             raise ValueError(f"Invalid model_name: {model_args.model_name_or_path}.")
         retain_dataset = torch.load(
-            f"./tokenized_dataset/{model_name_}/privacy/privacy_retain/normal/tokenized_dataset_val{'' if not data_args.direct_prompt else '_prompt'}.pt"
+            f"./tokenized_dataset/{model_name_}/privacy/privacy_retention/normal/tokenized_dataset_val{'' if not data_args.direct_prompt else '_prompt'}.pt"
         )
         forget_dataset = torch.load(
             f"./tokenized_dataset/{model_name_}/privacy/privacy_unlearn/normal/tokenized_dataset_val{'' if not data_args.direct_prompt else '_prompt'}.pt"
