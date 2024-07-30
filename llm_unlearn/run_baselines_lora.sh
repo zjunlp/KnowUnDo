@@ -2,20 +2,11 @@ export CUDA_VISIBLE_DEVICES=0
 port=21004
 
 # TOTAL METHODS
-# PARAMETERS=("--unlearn_method ascent_plus_kl_divergence --general True" "--unlearn_method ascent_plus_kl_divergence" "--unlearn_method gradient_ascent" "--unlearn_method ascent_plus_descent" "--unlearn_method ascent_plus_descent  --general True" "--unlearn_method random_label --completely_random True" "--unlearn_method random_label --top_k 1 --rm_groundtruth True")
-PARAMETERS=("--unlearn_method memflex)
+PARAMETERS=("--unlearn_method ascent_plus_kl_divergence --general True" "--unlearn_method ascent_plus_kl_divergence" "--unlearn_method gradient_ascent" "--unlearn_method ascent_plus_descent" "--unlearn_method ascent_plus_descent  --general True" "--unlearn_method random_label --completely_random True" "--unlearn_method random_label --top_k 1 --rm_groundtruth True")
 
-# TASKS=("privacy")
-TASKS=("copyright")
-# TASKS=("privacy" "copyright")
-
-MODELS=("../models/Llama-2-7b-chat-hf")
-# MODELS=("../models/Qwen1.5-7B-Chat")
-# MODELS=("../models/Qwen1.5-7B-Chat" "../models/Llama-2-7b-chat-hf")
-
-MODEL_FAMILY=("llama2-7b")
-# MODEL_FAMILY=("qwen1.5-7b")
-# MODEL_FAMILY=("qwen1.5-7b" "llama2-7b")
+TASKS=("copyright" "privacy")
+MODELS=("../models/Llama-2-7b-chat-hf" "../models/Qwen1.5-7B-Chat")
+MODEL_FAMILY=("llama2-7b" "qwen1.5-7b")
 
 for index in "${!MODELS[@]}"
 do
@@ -23,8 +14,7 @@ do
     model_family="${MODEL_FAMILY[$index]}"
     for task in "${TASKS[@]}"
     do
-        # lora_module="/group/30105/tbozhong/project/EMNLP2024/tofu/paper_models/final_${task}_ft_LORA_20_epochs_inst_lr0.0003_${model_family}_full/checkpoint"
-        lora_module="/group/30105/tbozhong/project/EMNLP2024/tofu/paper_models/final_${task}_ft_LORA_10_epochs_inst_lr0.0001_${model_family}_full/checkpoint"
+        lora_module="../pretrain/paper_models/final_${task}_ft_LORA_10_epochs_inst_lr0.0001_${model_family}_full/checkpoint"
         for PARAMETER in "${PARAMETERS[@]}"
         do
             eval "torchrun --nproc_per_node=1 --master_port=${port} run_unlearn_lora.py \

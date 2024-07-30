@@ -3,17 +3,9 @@ port=22005
 
 PARAMETERS=("--unlearn_method memflex")
 
-TASKS=("copyright")
-# TASKS=("privacy")
-# TASKS=("privacy" "copyright")
-
-# MODELS=("../models/Qwen1.5-7B-Chat")
-MODELS=("../models/Llama-2-7b-chat-hf")
-# MODELS=("../models/Llama-2-7b-chat-hf" "../models/Qwen1.5-7B-Chat")
-
-# MODEL_FAMILY=("qwen1.5-7b")
-MODEL_FAMILY=("llama2-7b")
-# MODEL_FAMILY=("llama2-7b" "qwen1.5-7b")
+TASKS=("copyright" "privacy")
+MODELS=("../models/Llama-2-7b-chat-hf" "../models/Qwen1.5-7B-Chat")
+MODEL_FAMILY=("llama2-7b" "qwen1.5-7b")
 
 for task in "${TASKS[@]}"
 do
@@ -21,8 +13,7 @@ do
     do
         model="${MODELS[$index]}"
         model_family="${MODEL_FAMILY[$index]}"
-        lora_module="/group/30105/tbozhong/project/EMNLP2024/tofu/paper_models/final_${task}_ft_LORA_20_epochs_inst_lr0.0003_${model_family}_full/checkpoint"
-        # lora_module="/group/30105/tbozhong/project/EMNLP2024/tofu/paper_models/final_${task}_ft_LORA_10_epochs_inst_lr0.0001_${model_family}_full/checkpoint"
+        lora_module="../pretrain/paper_models/final_${task}_ft_LORA_20_epochs_inst_lr0.0003_${model_family}_full/checkpoint"
         for PARAMETER in "${PARAMETERS[@]}"
         do
             eval "torchrun --nproc_per_node=1 --master_port=${port} run_unlearn_lora.py \
@@ -49,7 +40,3 @@ do
         done
     done
 done
-# --aux_type 'grad' \
-# --learning_rate 3e-4 \
-
-# --learning_rate 5e-5 \
