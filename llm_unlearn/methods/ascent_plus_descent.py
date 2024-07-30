@@ -7,14 +7,13 @@ import inspect
 
 class AscentPlusDescentTrainer(Trainer):
     def __init__(self, *args, **kwargs):
-        self.aux_type = kwargs.pop("aux_type", None)
         super().__init__(*args, **kwargs)
 
     def compute_loss(self, model, inputs, return_outputs=False):
         if "factor" not in inputs.keys():
             return super().compute_loss(model, inputs, return_outputs)
         factors = inputs.pop("factor")
-        if self.aux_type == "grad":
+        if self.args.unlearn_method == "memflex":
             factors = torch.where(factors == -1, torch.tensor(-0.4), factors)
             factors = torch.where(factors == 1, torch.tensor(2.0), factors)
         outputs = model(**inputs)

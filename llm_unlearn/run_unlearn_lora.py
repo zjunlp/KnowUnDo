@@ -206,10 +206,6 @@ class DataTrainingArguments:
             "help": "The configuration name of the dataset to use (via the datasets library)."
         },
     )
-    aux_type: Optional[str] = field(
-        default=None,
-        metadata={"help": "The auxiliary file types."},
-    )
     train_file: Optional[str] = field(
         default=None, metadata={"help": "The input training data file (a text file)."}
     )
@@ -304,8 +300,6 @@ def main():
         overall_output_dir += "general"
     if training_args.rm_groundtruth:
         overall_output_dir += "_rmgt"
-    if data_args.aux_type:
-        overall_output_dir += f"_{data_args.aux_type}"
     training_args.output_dir = overall_output_dir
     if training_args.do_unlearn or training_args.do_unlearn_eval:
         if training_args.unlearn_method == "random_label":
@@ -392,7 +386,7 @@ def main():
         base_model.enable_input_require_grads()
         model = PeftModel.from_pretrained(base_model, model_args.model_name_or_path, is_trainable=True)
         
-        if data_args.aux_type == "grad":
+        if training_args.unlearn_method == "memflex":
             with open(f"../pretrain/outputs/{model_name}/located_region_{training_args.domain}.json", "r") as f:
                 unlearn_region = json.load(f)
 
@@ -407,7 +401,7 @@ def main():
             tokenizer.pad_token = tokenizer.eos_token
         
         if training_args.unlearn_method == "random_label":
-            model_name_ = finetuned_model_name_or_path.split('/')[-1]
+            model_name_ = os.path.basename(os.path.normpath(finetuned_model_name_or_path))
             if training_args.completely_random:
                 dataset_path = os.path.join(
                     "./tokenized_dataset",
@@ -442,7 +436,7 @@ def main():
                 **Trainer_args,
             )
         elif training_args.unlearn_method == "gradient_ascent":
-            model_name_ = finetuned_model_name_or_path.split('/')[-1]
+            model_name_ = os.path.basename(os.path.normpath(finetuned_model_name_or_path))
             train_dataset = torch.load(os.path.join(
                 "./tokenized_dataset",
                 model_name_,
@@ -459,7 +453,7 @@ def main():
                 **Trainer_args,
             )
         elif training_args.unlearn_method == "ascent_plus_descent":
-            model_name_ = finetuned_model_name_or_path.split('/')[-1]
+            model_name_ = os.path.basename(os.path.normpath(finetuned_model_name_or_path))
             if training_args.general:
                 train_dataset = torch.load(os.path.join(
                     "./tokenized_dataset",
@@ -474,6 +468,24 @@ def main():
                     domain_dir,
                     "ascent_plus_descent/tokenized_dataset.pt"
                 ))
+            if data_args.max_train_samples is not None:
+                max_train_samples = min(len(train_dataset), data_args.max_train_samples)
+                train_dataset = train_dataset.select(range(max_train_samples))
+            unlearner = AscentPlusDescentTrainer(
+                model=model,
+                train_dataset=train_dataset,
+                tokenizer=tokenizer,
+                **Trainer_args,
+                data_collator=AscentPlusDescentDataCollator(tokenizer),
+            )
+        elif training_args.unlearn_method == "memflex":
+            model_name_ = os.path.basename(os.path.normpath(finetuned_model_name_or_path))
+            train_dataset = torch.load(os.path.join(
+                "./tokenized_dataset",
+                model_name_,
+                domain_dir,
+                "ascent_plus_descent/tokenized_dataset.pt"
+            ))
             if data_args.max_train_samples is not None:
                 max_train_samples = min(len(train_dataset), data_args.max_train_samples)
                 train_dataset = train_dataset.select(range(max_train_samples))
@@ -492,18 +504,16 @@ def main():
                 T_max=150,
             )
             # pass optimizer and scheduler into trainer
-            if data_args.aux_type == "grad":
-                Trainer_args["args"].optimizers = (optimizer, scheduler)
+            Trainer_args["args"].optimizers = (optimizer, scheduler)
             unlearner = AscentPlusDescentTrainer(
                 model=model,
                 train_dataset=train_dataset,
                 tokenizer=tokenizer,
                 **Trainer_args,
                 data_collator=AscentPlusDescentDataCollator(tokenizer),
-                aux_type=data_args.aux_type,
             )
         elif training_args.unlearn_method == "ascent_plus_kl_divergence":
-            model_name_ = finetuned_model_name_or_path.split('/')[-1]
+            model_name_ = os.path.basename(os.path.normpath(finetuned_model_name_or_path))
             if training_args.general:
                 train_dataset = torch.load(os.path.join(
                     "./tokenized_dataset",
