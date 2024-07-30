@@ -1,4 +1,4 @@
-MODEL_NAMES=("../../models/Qwen1.5-7B-Chat" "../../models/Llama-2-7b-chat-hf")
+MODEL_NAMES=("../../models/Llama-2-7b-chat-hf" "../../models/Qwen1.5-7B-Chat")
 
 for model_name in "${MODEL_NAMES[@]}"
 do

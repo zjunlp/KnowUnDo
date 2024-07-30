@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
         raw_dataset = load_dataset("zjunlp/KnowUnDo", name=dataset_path["name"], split=dataset_path["split"], cache_dir="../../data")['train'][0]
         raw_dataset = [{"text": '\n\n'.join([dic["text"], dic["labels"]]), "labels": '\n\n' + dic["labels"]} for dic in raw_dataset]
-        negative_train = Dataset.from_dict({key: [dic[key] for dic in raw_dataset] for key in raw_dataset[0]})
+        negative_train = datasets.Dataset.from_dict({key: [dic[key] for dic in raw_dataset] for key in raw_dataset[0]})
 
         for positive_domain in ["general", negative_domain]:
             if positive_domain + "_retention" in our_dataset_path_dict:
@@ -137,7 +137,8 @@ if __name__ == "__main__":
 
                 raw_dataset = load_dataset("zjunlp/KnowUnDo", name=dataset_path["name"], split=dataset_path["split"], cache_dir="../../data")['train'][0]
                 raw_dataset = [{"text": '\n\n'.join([dic["text"], dic["labels"]]), "labels": '\n\n' + dic["labels"]} for dic in raw_dataset]
-                positive_train = Dataset.from_dict({key: [dic[key] for dic in raw_dataset] for key in raw_dataset[0]})
+                positive_train = datasets.Dataset.from_dict({key: [dic[key] for dic in raw_dataset] for key in raw_dataset[0]})
+                save_path = os.path.join("../tokenized_dataset", model_name, domain2dir[negative_domain], "ascent_plus_descent")
             else:
                 # For GA + GD on Out-of-Domain
                 positive_train = load_dataset("llmunlearn/unlearn_dataset", name=positive_domain, split="retain", cache_dir="../../data")

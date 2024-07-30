@@ -91,7 +91,16 @@ bash tokenize_datasets.sh
 ```bash
 # directory: llm_unlearn
 bash run_baselines_lora.sh
-  ```
+```
+- Available methods with corresponding arguments: 
+  - `--unlearn_method gradient_ascent `
+  - `--unlearn_method random_label --completely_random True` (named Fine-tuning with Random Labels in the paper)
+  - `--unlearn_method random_label  --top_k 1  --rm_groundtruth True` (named Unlearning with Adversarial Samples in the paper)
+  - `--unlearn_method ascent_plus_descent`
+  - `--unlearn_method ascent_plus_kl_divergence`
+  - `--unlearn_method ascent_plus_descent --general True`
+  - `--unlearn_method ascent_plus_kl_divergence --general True`
+  - `--unlearn_method memflex` (the strong baseline proposed by us)
 ## Eval Unlearned Model
 <!-- ```bash
 # directory: llm_unlearn

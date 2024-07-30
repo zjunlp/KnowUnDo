@@ -2,15 +2,16 @@ export CUDA_VISIBLE_DEVICES=0
 port=21004
 
 # TOTAL METHODS
-PARAMETERS=("--unlearn_method ascent_plus_kl_divergence --general True" "--unlearn_method ascent_plus_kl_divergence" "--unlearn_method gradient_ascent" "--unlearn_method ascent_plus_descent" "--unlearn_method ascent_plus_descent  --general True" "--unlearn_method random_label --completely_random True" "--unlearn_method random_label --top_k 1 --rm_groundtruth True")
+# PARAMETERS=("--unlearn_method ascent_plus_kl_divergence --general True" "--unlearn_method ascent_plus_kl_divergence" "--unlearn_method gradient_ascent" "--unlearn_method ascent_plus_descent" "--unlearn_method ascent_plus_descent  --general True" "--unlearn_method random_label --completely_random True" "--unlearn_method random_label --top_k 1 --rm_groundtruth True")
+PARAMETERS=("--unlearn_method memflex)
 
-TASKS=("privacy")
-# TASKS=("copyright")
+# TASKS=("privacy")
+TASKS=("copyright")
 # TASKS=("privacy" "copyright")
 
-MODELS=("/dockerdata/Llama-2-7b-chat-hf")
-# MODELS=("/dockerdata/Qwen1.5-7B-Chat")
-# MODELS=("/dockerdata/Qwen1.5-7B-Chat" "/dockerdata/Llama-2-7b-chat-hf")
+MODELS=("../models/Llama-2-7b-chat-hf")
+# MODELS=("../models/Qwen1.5-7B-Chat")
+# MODELS=("../models/Qwen1.5-7B-Chat" "../models/Llama-2-7b-chat-hf")
 
 MODEL_FAMILY=("llama2-7b")
 # MODEL_FAMILY=("qwen1.5-7b")
