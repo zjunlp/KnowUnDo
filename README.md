@@ -16,7 +16,7 @@
 
 <p align="center">
   <a href="#-overview">🔔 Overview</a> •
-  <a href="#-dataset">📊 Load Dataset</a> •
+  <a href="#-load-datasets">📊 Load Datasets</a> •
   <a href="#-how-to-run">🚀 How to Run</a> •
   <a href="#-citation">📖 Citation</a> •
 </p>
@@ -91,6 +91,7 @@ bash tokenize_datasets.sh
 ```bash
 # directory: llm_unlearn
 bash run_baselines_lora.sh
+bash run_ours_lora.sh
 ```
 - Available methods with corresponding arguments: 
   - `--unlearn_method gradient_ascent `
