@@ -1,4 +1,4 @@
-<h1 align="center"><img src="figs/KnowUnDo.png" width="25" height="25"> KnowUnDo </h1>
+<h1 align="center"><img src="figs/KnowUnDo.png" width="30" height="30"> KnowUnDo </h1>
 <h3 align="center"> To Forget or Not? Towards Practical Knowledge Unlearning for LLMs </h3>
 
 <p align="center">
