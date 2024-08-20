@@ -123,12 +123,12 @@ def main(cfg):
     trainer.train()
 
     # save the model
-    if cfg.LoRA.r != 0:
-        model = model.merge_and_unload()
+    # if cfg.LoRA.r != 0:
+    #     model = model.merge_and_unload()
 
 
-    model.save_pretrained(cfg.save_dir)
-    tokenizer.save_pretrained(cfg.save_dir)
+    # model.save_pretrained(cfg.save_dir)
+    # tokenizer.save_pretrained(cfg.save_dir)
 
 if __name__ == "__main__":
     main()
