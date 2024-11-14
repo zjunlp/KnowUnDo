@@ -131,13 +131,10 @@ We would like to express our sincere gratitude to the excellent work [Unlearning
 If you use or extend our work, please cite the paper as follows:
 
 ```bibtex
-@misc{tian2024forgetnotpracticalknowledge,
-      title={To Forget or Not? Towards Practical Knowledge Unlearning for Large Language Models}, 
-      author={Bozhong Tian and Xiaozhuan Liang and Siyuan Cheng and Qingbin Liu and Mengru Wang and Dianbo Sui and Xi Chen and Huajun Chen and Ningyu Zhang},
-      year={2024},
-      eprint={2407.01920},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2407.01920}, 
+@article{tian2024forget,
+  title={To forget or not? towards practical knowledge unlearning for large language models},
+  author={Tian, Bozhong and Liang, Xiaozhuan and Cheng, Siyuan and Liu, Qingbin and Wang, Mengru and Sui, Dianbo and Chen, Xi and Chen, Huajun and Zhang, Ningyu},
+  journal={arXiv preprint arXiv:2407.01920},
+  year={2024}
 }
 ```
