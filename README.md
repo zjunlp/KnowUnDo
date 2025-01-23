@@ -27,7 +27,7 @@
 
 <div align=center><img src="figs/main.png" width="100%" height="100%" /></div>
 
-We provide the **KnowUnDo**, a benchmark containing copyrighted content and user privacy domains to evaluate if the unlearning process inadvertently erases essential knowledge. Access our **KnowUnDo** directly on [Hugging Face](https://huggingface.co/datasets/zjunlp/KnowUnDo).
+We provide the **KnowUnDo** (EMNLP 2025 Findings), a benchmark containing copyrighted content and user privacy domains to evaluate if the unlearning process inadvertently erases essential knowledge. Access our **KnowUnDo** directly on [Hugging Face](https://huggingface.co/datasets/zjunlp/KnowUnDo).
 
 To address this, we propose a simple yet effective method, **MemFlex**, which utilizes gradient information to precisely target and unlearn sensitive parameters.
 
